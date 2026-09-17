@@ -1,0 +1,991 @@
+import Link from "next/link";
+
+export default function QuemEResponsavel() {
+  return (
+    <main className="min-h-screen bg-[#F5F9FF] text-[#071D49]">
+
+      {/* CABEÇALHO */}
+      <header className="border-b border-blue-100 bg-white">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+          <Link href="/">
+            <div className="text-2xl font-extrabold tracking-tight">
+              Observa <span className="text-[#0879E8]">Salvador</span>
+            </div>
+
+            <p className="text-xs font-semibold text-slate-500">
+              Entenda, acompanhe e fiscalize.
+            </p>
+          </Link>
+
+          <Link
+            href="/politica-do-zero"
+            className="rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold transition hover:border-blue-300 hover:bg-blue-50"
+          >
+            ← Política do Zero
+          </Link>
+        </div>
+      </header>
+
+      {/* ABERTURA */}
+      <section className="bg-gradient-to-b from-[#EAF4FF] to-[#F5F9FF]">
+        <div className="mx-auto max-w-5xl px-6 pb-16 pt-16">
+
+          <span className="inline-flex rounded-full bg-white px-5 py-2 text-sm font-extrabold tracking-wide text-[#0879E8] shadow-sm">
+            PASSO 02 · POLÍTICA DO ZERO
+          </span>
+
+          <h1 className="mt-8 max-w-4xl text-5xl font-black tracking-tight md:text-6xl">
+            Quem é responsável{" "}
+            <span className="text-[#0879E8]">pelo quê?</span>
+          </h1>
+
+          <p className="mt-6 max-w-3xl text-xl leading-8 text-slate-600">
+            Quando aparece um problema, você sabe quem deve resolver?
+            Prefeitura, Governo da Bahia ou Governo Federal?
+          </p>
+
+          {/* SITUAÇÕES DO DIA A DIA */}
+          <div className="mt-10 rounded-[30px] border border-blue-100 bg-white p-8 shadow-sm md:p-10">
+
+            <p className="text-sm font-extrabold tracking-[0.16em] text-[#0879E8]">
+              PENSE NO SEU DIA A DIA
+            </p>
+
+            <h2 className="mt-4 text-3xl font-black">
+              Imagine estas situações:
+            </h2>
+
+            <div className="mt-7 space-y-4 text-lg text-slate-700">
+
+              <p>🕳️ Tem um buraco na rua do seu bairro.</p>
+
+              <p>🏥 O posto de saúde não está funcionando direito.</p>
+
+              <p>🏫 Está faltando professor na escola.</p>
+
+              <p>💳 Seu benefício do INSS não caiu.</p>
+
+              <p>🚔 Você precisa entender quem é responsável pela segurança.</p>
+
+            </div>
+
+            <div className="mt-8 rounded-2xl bg-[#FFF6D8] p-6">
+
+              <p className="text-xl font-black">
+                Quem você deve cobrar?
+              </p>
+
+              <p className="mt-2 leading-7 text-slate-700">
+                O prefeito? O governador? O presidente?
+              </p>
+
+              <p className="mt-3 font-bold text-[#0879E8]">
+                É isso que você vai aprender nesta página.
+              </p>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PRIMEIRA EXPLICAÇÃO */}
+      <section className="mx-auto max-w-5xl px-6 py-14">
+
+        <p className="text-sm font-extrabold tracking-[0.16em] text-[#0879E8]">
+          PRIMEIRO, ENTENDA ISTO
+        </p>
+
+        <h2 className="mt-3 text-4xl font-black">
+          Você mora em Salvador. Mas Salvador faz parte de algo maior.
+        </h2>
+
+        <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+          Para entender quem é responsável por cada coisa, primeiro precisamos
+          entender onde Salvador está.
+        </p>
+
+        {/* SALVADOR */}
+        <div className="mt-10 rounded-[28px] border border-blue-100 bg-white p-7 shadow-sm md:p-8">
+
+          <div className="flex items-start gap-5">
+
+            <div className="text-4xl">🏘️</div>
+
+            <div>
+              <p className="text-sm font-extrabold tracking-wide text-[#0879E8]">
+                SALVADOR
+              </p>
+
+              <h3 className="mt-1 text-2xl font-black">
+                É um Município.
+              </h3>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Quem administra o Município é o
+                <strong className="text-[#071D49]"> prefeito</strong>.
+              </p>
+
+              <p className="mt-2 leading-7 text-slate-600">
+                A administração municipal é feita pela
+                <strong className="text-[#071D49]"> Prefeitura</strong>.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        {/* SETA */}
+        <div className="py-4 text-center text-3xl text-[#0879E8]">
+          ↓
+        </div>
+
+        {/* BAHIA */}
+        <div className="rounded-[28px] border border-blue-100 bg-[#EAF4FF] p-7 md:p-8">
+
+          <div className="flex items-start gap-5">
+
+            <div className="text-4xl">🌴</div>
+
+            <div>
+              <p className="text-sm font-extrabold tracking-wide text-[#0879E8]">
+                BAHIA
+              </p>
+
+              <h3 className="mt-1 text-2xl font-black">
+                É um Estado.
+              </h3>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Quem chefia o governo estadual é o
+                <strong className="text-[#071D49]"> governador</strong>.
+              </p>
+
+              <p className="mt-2 leading-7 text-slate-600">
+                É o que chamamos de
+                <strong className="text-[#071D49]"> Governo do Estado da Bahia</strong>.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        {/* SETA */}
+        <div className="py-4 text-center text-3xl text-[#0879E8]">
+          ↓
+        </div>
+
+        {/* BRASIL */}
+        <div className="rounded-[28px] bg-[#071D49] p-7 text-white md:p-8">
+
+          <div className="flex items-start gap-5">
+
+            <img
+  src="/bandeira-brasil.svg"
+  alt="Bandeira do Brasil"
+  className="mt-1 h-8 w-12 rounded-sm object-cover shadow-sm"
+/>
+
+            <div>
+              <p className="text-sm font-extrabold tracking-wide text-cyan-300">
+                BRASIL
+              </p>
+
+              <h3 className="mt-1 text-2xl font-black">
+                Aqui está a União.
+              </h3>
+
+              <p className="mt-3 leading-7 text-blue-100">
+                No nível federal, quem chefia o Poder Executivo é o
+                <strong className="text-white"> presidente da República</strong>.
+              </p>
+
+              <p className="mt-2 leading-7 text-blue-100">
+                É o que normalmente chamamos de
+                <strong className="text-white"> Governo Federal</strong>.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        {/* RESUMO */}
+        <div className="mt-10 rounded-[28px] bg-[#FFF6D8] p-7 md:p-8">
+
+          <p className="text-sm font-extrabold tracking-[0.14em] text-amber-700">
+            NÃO PRECISA DECORAR
+          </p>
+
+          <h3 className="mt-3 text-2xl font-black">
+            Pense assim:
+          </h3>
+
+          <div className="mt-5 space-y-3 text-lg leading-7 text-slate-700">
+
+            <p>
+              🏘️ <strong>Salvador</strong> é um Município.
+            </p>
+
+            <p>
+              🌴 Salvador fica no Estado da <strong>Bahia</strong>.
+            </p>
+
+            <div className="flex items-center gap-3">
+  <img
+    src="/bandeira-brasil.svg"
+    alt="Bandeira do Brasil"
+    className="h-5 w-8 rounded-sm object-cover shadow-sm"
+  />
+
+  <p>
+    A Bahia faz parte do <strong>Brasil</strong>.
+  </p>
+</div>
+
+          </div>
+
+          <p className="mt-6 leading-7 text-slate-700">
+            Por isso existem decisões tomadas no Município, outras no Estado
+            da Bahia e outras no nível federal.
+          </p>
+
+        </div>
+
+      </section>
+            {/* QUEM CUIDA DE CADA COISA */}
+      <section className="border-t border-blue-100 bg-white">
+        <div className="mx-auto max-w-5xl px-6 py-16">
+
+          <p className="text-sm font-extrabold tracking-[0.16em] text-[#0879E8]">
+            AGORA VAMOS PARA A VIDA REAL
+          </p>
+
+          <h2 className="mt-3 text-4xl font-black">
+            Quem cuida de cada coisa?
+          </h2>
+
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+            Agora que você já conhece os três níveis, vamos usar situações
+            que podem acontecer no seu dia a dia.
+          </p>
+
+          <div className="mt-10 space-y-5">
+
+            {/* BURACO NA RUA */}
+            <div className="rounded-[28px] border border-slate-200 bg-[#F8FBFF] p-7 md:p-8">
+
+              <div className="flex gap-5">
+                <div className="text-4xl">🕳️</div>
+
+                <div>
+                  <p className="text-sm font-extrabold text-[#0879E8]">
+                    SITUAÇÃO 1
+                  </p>
+
+                  <h3 className="mt-1 text-2xl font-black">
+                    Tem um buraco na rua do meu bairro.
+                  </h3>
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-2xl bg-white p-6">
+                <p className="text-sm font-extrabold tracking-wide text-slate-500">
+                  QUEM PODE SER RESPONSÁVEL?
+                </p>
+
+                <p className="mt-2 text-xl font-black">
+                  🏘️ Prefeitura de Salvador
+                </p>
+
+                <p className="mt-3 leading-7 text-slate-600">
+                  Se a rua for municipal, a manutenção é uma responsabilidade
+                  do Município.
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-2xl bg-[#FFF6D8] p-5">
+                <p className="font-black">⚠️ Atenção</p>
+
+                <p className="mt-2 leading-7 text-slate-700">
+                  Nem toda via que passa por Salvador pertence ao Município.
+                  Existem também vias estaduais e federais. Por isso, antes
+                  de cobrar, é importante descobrir quem administra aquela via.
+                </p>
+              </div>
+
+            </div>
+
+            {/* ESCOLA ESTADUAL */}
+            <div className="rounded-[28px] border border-slate-200 bg-[#F8FBFF] p-7 md:p-8">
+
+              <div className="flex gap-5">
+                <div className="text-4xl">🏫</div>
+
+                <div>
+                  <p className="text-sm font-extrabold text-[#0879E8]">
+                    SITUAÇÃO 2
+                  </p>
+
+                  <h3 className="mt-1 text-2xl font-black">
+                    O problema é em uma escola estadual.
+                  </h3>
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-2xl bg-white p-6">
+                <p className="text-sm font-extrabold tracking-wide text-slate-500">
+                  QUEM É RESPONSÁVEL?
+                </p>
+
+                <p className="mt-2 text-xl font-black">
+                  🌴 Governo do Estado da Bahia
+                </p>
+
+                <p className="mt-3 leading-7 text-slate-600">
+                  Mesmo que a escola esteja dentro de Salvador, se ela pertence
+                  à rede estadual, sua administração é do Estado da Bahia.
+                </p>
+              </div>
+
+            </div>
+
+            {/* INSS */}
+            <div className="rounded-[28px] border border-slate-200 bg-[#F8FBFF] p-7 md:p-8">
+
+              <div className="flex gap-5">
+                <div className="text-4xl">💳</div>
+
+                <div>
+                  <p className="text-sm font-extrabold text-[#0879E8]">
+                    SITUAÇÃO 3
+                  </p>
+
+                  <h3 className="mt-1 text-2xl font-black">
+                    Meu benefício do INSS não caiu.
+                  </h3>
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-2xl bg-white p-6">
+
+                <p className="text-sm font-extrabold tracking-wide text-slate-500">
+                  QUEM É RESPONSÁVEL?
+                </p>
+
+                <div className="mt-3 flex items-center gap-3">
+
+                  <img
+                    src="/bandeira-brasil.svg"
+                    alt="Bandeira do Brasil"
+                    className="h-5 w-8 rounded-sm object-cover shadow-sm"
+                  />
+
+                  <p className="text-xl font-black">
+                    Governo Federal
+                  </p>
+
+                </div>
+
+                <p className="mt-3 leading-7 text-slate-600">
+                  O INSS é um órgão da administração pública federal.
+                  Por isso, esse assunto não é administrado pela Prefeitura
+                  de Salvador nem pelo Governo da Bahia.
+                </p>
+
+              </div>
+
+            </div>
+
+            {/* POLÍCIA MILITAR */}
+            <div className="rounded-[28px] border border-slate-200 bg-[#F8FBFF] p-7 md:p-8">
+
+              <div className="flex gap-5">
+                <div className="text-4xl">🚔</div>
+
+                <div>
+                  <p className="text-sm font-extrabold text-[#0879E8]">
+                    SITUAÇÃO 4
+                  </p>
+
+                  <h3 className="mt-1 text-2xl font-black">
+                    E a Polícia Militar?
+                  </h3>
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-2xl bg-white p-6">
+
+                <p className="text-sm font-extrabold tracking-wide text-slate-500">
+                  DE QUEM ELA FAZ PARTE?
+                </p>
+
+                <p className="mt-2 text-xl font-black">
+                  🌴 Estado da Bahia
+                </p>
+
+                <p className="mt-3 leading-7 text-slate-600">
+                  A Polícia Militar da Bahia faz parte da estrutura do Estado
+                  da Bahia. Ela não é uma polícia da Prefeitura de Salvador.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+            {/* QUANDO MAIS DE UM GOVERNO PARTICIPA */}
+      <section className="bg-[#EAF4FF]">
+        <div className="mx-auto max-w-5xl px-6 py-16">
+
+          <p className="text-sm font-extrabold tracking-[0.16em] text-[#0879E8]">
+            AGORA FICA UM POUCO DIFERENTE
+          </p>
+
+          <h2 className="mt-3 text-4xl font-black">
+            Às vezes, mais de um governo participa.
+          </h2>
+
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+            Nem todo serviço público funciona com apenas um responsável.
+            Em algumas áreas, Prefeitura, Estado e Governo Federal possuem
+            responsabilidades diferentes e trabalham dentro do mesmo sistema.
+          </p>
+
+          {/* EXEMPLO DO POSTO */}
+          <div className="mt-10 rounded-[30px] bg-white p-8 shadow-sm md:p-10">
+
+            <div className="flex items-start gap-5">
+              <div className="text-4xl">🏥</div>
+
+              <div>
+                <p className="text-sm font-extrabold text-[#0879E8]">
+                  UM BOM EXEMPLO
+                </p>
+
+                <h3 className="mt-2 text-3xl font-black">
+                  O posto de saúde do seu bairro
+                </h3>
+              </div>
+            </div>
+
+            <p className="mt-6 text-lg leading-8 text-slate-600">
+              Imagine que você procura uma unidade de saúde do Município
+              de Salvador.
+            </p>
+
+            <p className="mt-4 text-lg leading-8 text-slate-600">
+              A Prefeitura pode ser responsável pela administração daquela
+              unidade e pelo atendimento local.
+            </p>
+
+            <div className="mt-7 rounded-2xl bg-[#FFF6D8] p-6">
+
+              <p className="text-xl font-black">
+                Mas isso não significa que saúde seja responsabilidade
+                somente da Prefeitura.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-700">
+                O SUS funciona com participação dos Municípios, dos Estados
+                e da União. Cada nível possui responsabilidades dentro
+                do sistema.
+              </p>
+
+            </div>
+          </div>
+
+          {/* TRÊS NÍVEIS */}
+          <div className="mt-6 grid gap-5 md:grid-cols-3">
+
+            <div className="rounded-[24px] bg-white p-6">
+              <div className="text-3xl">🏘️</div>
+
+              <p className="mt-4 text-sm font-extrabold text-[#0879E8]">
+                MUNICÍPIO
+              </p>
+
+              <h3 className="mt-1 text-xl font-black">
+                Prefeitura
+              </h3>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Atua diretamente em muitos serviços de saúde que estão
+                próximos da população, como a atenção básica municipal.
+              </p>
+            </div>
+
+            <div className="rounded-[24px] bg-white p-6">
+              <div className="text-3xl">🌴</div>
+
+              <p className="mt-4 text-sm font-extrabold text-[#0879E8]">
+                ESTADO
+              </p>
+
+              <h3 className="mt-1 text-xl font-black">
+                Governo da Bahia
+              </h3>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Também possui responsabilidades no SUS e administra
+                serviços e unidades estaduais de saúde.
+              </p>
+            </div>
+
+            <div className="rounded-[24px] bg-white p-6">
+
+              <img
+                src="/bandeira-brasil.svg"
+                alt="Bandeira do Brasil"
+                className="h-6 w-10 rounded-sm object-cover shadow-sm"
+              />
+
+              <p className="mt-4 text-sm font-extrabold text-[#0879E8]">
+                UNIÃO
+              </p>
+
+              <h3 className="mt-1 text-xl font-black">
+                Governo Federal
+              </h3>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Participa do financiamento, das políticas nacionais
+                e da organização geral do SUS.
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* REGRA SIMPLES */}
+          <div className="mt-8 rounded-[28px] bg-[#071D49] p-8 text-white">
+
+            <p className="text-sm font-extrabold tracking-[0.16em] text-cyan-300">
+              GUARDE ESTA IDEIA
+            </p>
+
+            <h3 className="mt-3 text-2xl font-black">
+              Não tente colocar tudo em uma única caixinha.
+            </h3>
+
+            <p className="mt-4 max-w-3xl leading-7 text-blue-100">
+              Existem serviços que são principalmente municipais,
+              estaduais ou federais. Mas também existem áreas em que
+              os três níveis participam.
+            </p>
+
+            <p className="mt-4 max-w-3xl font-bold leading-7 text-white">
+              O importante é descobrir qual órgão é responsável
+              pelo problema específico que você quer resolver.
+            </p>
+
+          </div>
+
+        </div>
+      </section>
+            {/* NÃO CONFUNDA */}
+      <section className="bg-white">
+        <div className="mx-auto max-w-5xl px-6 py-16">
+
+          <p className="text-sm font-extrabold tracking-[0.16em] text-[#0879E8]">
+            ⚠️ NÃO CONFUNDA
+          </p>
+
+          <h2 className="mt-3 max-w-4xl text-4xl font-black">
+            Estar em Salvador não significa ser responsabilidade da Prefeitura.
+          </h2>
+
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+            Dentro de Salvador existem serviços e órgãos ligados ao Município,
+            ao Estado da Bahia e também à União.
+          </p>
+
+          <div className="mt-10 space-y-5">
+
+            {/* EXEMPLO 1 */}
+            <div className="rounded-[26px] border border-slate-200 bg-[#F8FBFF] p-7">
+              <div className="flex items-start gap-5">
+                <div className="text-4xl">🏫</div>
+
+                <div>
+                  <h3 className="text-xl font-black">
+                    Uma escola estadual fica em Salvador.
+                  </h3>
+
+                  <p className="mt-3 leading-7 text-slate-600">
+                    Mas ela pertence à rede do
+                    <strong className="text-[#071D49]"> Estado da Bahia</strong>.
+                  </p>
+
+                  <p className="mt-2 font-bold text-[#0879E8]">
+                    Estar em Salvador não transforma essa escola em uma escola
+                    da Prefeitura.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* EXEMPLO 2 */}
+            <div className="rounded-[26px] border border-slate-200 bg-[#F8FBFF] p-7">
+              <div className="flex items-start gap-5">
+                <div className="text-4xl">🚔</div>
+
+                <div>
+                  <h3 className="text-xl font-black">
+                    Uma viatura da Polícia Militar circula em Salvador.
+                  </h3>
+
+                  <p className="mt-3 leading-7 text-slate-600">
+                    A Polícia Militar da Bahia faz parte da estrutura do
+                    <strong className="text-[#071D49]"> Estado da Bahia</strong>.
+                  </p>
+
+                  <p className="mt-2 font-bold text-[#0879E8]">
+                    Ela não passa a ser da Prefeitura porque está atuando
+                    dentro da cidade.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* EXEMPLO 3 */}
+            <div className="rounded-[26px] border border-slate-200 bg-[#F8FBFF] p-7">
+              <div className="flex items-start gap-5">
+
+                <img
+                  src="/bandeira-brasil.svg"
+                  alt="Bandeira do Brasil"
+                  className="mt-1 h-7 w-11 rounded-sm object-cover shadow-sm"
+                />
+
+                <div>
+                  <h3 className="text-xl font-black">
+                    Uma agência do INSS também pode estar em Salvador.
+                  </h3>
+
+                  <p className="mt-3 leading-7 text-slate-600">
+                    Mas o INSS pertence à administração pública
+                    <strong className="text-[#071D49]"> federal</strong>.
+                  </p>
+
+                  <p className="mt-2 font-bold text-[#0879E8]">
+                    Portanto, não é a Prefeitura de Salvador que administra o INSS.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* REGRA VISUAL */}
+          <div className="mt-10 rounded-[30px] bg-[#FFF6D8] p-8 md:p-10">
+
+            <p className="text-sm font-extrabold tracking-[0.16em] text-amber-700">
+              UMA REGRA SIMPLES
+            </p>
+
+            <h3 className="mt-3 text-3xl font-black">
+              Não olhe apenas para onde o serviço está.
+            </h3>
+
+            <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-700">
+              Procure saber <strong>quem administra aquele serviço</strong>.
+              É isso que ajuda a descobrir qual órgão público deve ser
+              procurado ou fiscalizado.
+            </p>
+
+          </div>
+
+        </div>
+      </section>
+            {/* QUEM EU PROCURO */}
+      <section className="bg-[#F5F9FF]">
+        <div className="mx-auto max-w-5xl px-6 py-16">
+
+          <p className="text-sm font-extrabold tracking-[0.16em] text-[#0879E8]">
+            E NA HORA DE COBRAR?
+          </p>
+
+          <h2 className="mt-3 text-4xl font-black">
+            Então, quem eu procuro?
+          </h2>
+
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+            Antes de reclamar com qualquer autoridade, tente descobrir
+            quem administra o serviço onde está o problema.
+          </p>
+
+          {/* PASSO A PASSO */}
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+
+            <div className="rounded-[26px] border border-slate-200 bg-white p-7">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0879E8] text-lg font-black text-white">
+                1
+              </div>
+
+              <h3 className="mt-5 text-xl font-black">
+                Qual é o problema?
+              </h3>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                É na escola? No posto de saúde? Na rua? No INSS?
+                Na segurança?
+              </p>
+            </div>
+
+            <div className="rounded-[26px] border border-slate-200 bg-white p-7">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0879E8] text-lg font-black text-white">
+                2
+              </div>
+
+              <h3 className="mt-5 text-xl font-black">
+                Quem administra?
+              </h3>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Descubra se aquele serviço é municipal, estadual,
+                federal ou se existe responsabilidade compartilhada.
+              </p>
+            </div>
+
+            <div className="rounded-[26px] border border-slate-200 bg-white p-7">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0879E8] text-lg font-black text-white">
+                3
+              </div>
+
+              <h3 className="mt-5 text-xl font-black">
+                Procure o lugar certo
+              </h3>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Assim você consegue procurar o órgão responsável,
+                fazer uma reclamação ou acompanhar o problema.
+              </p>
+            </div>
+
+          </div>
+
+          {/* EXEMPLO COMPLETO */}
+          <div className="mt-10 rounded-[30px] bg-white p-8 shadow-sm md:p-10">
+
+            <p className="text-sm font-extrabold tracking-[0.16em] text-[#0879E8]">
+              VEJA UM EXEMPLO
+            </p>
+
+            <h3 className="mt-3 text-3xl font-black">
+              “A escola do meu filho está com um problema.”
+            </h3>
+
+            <p className="mt-5 text-lg leading-8 text-slate-600">
+              Só saber que a escola fica em Salvador ainda não é suficiente.
+            </p>
+
+            <div className="mt-7 space-y-4">
+
+              <div className="rounded-2xl bg-[#EAF4FF] p-5">
+                <p className="font-black">
+                  🏘️ É uma escola municipal?
+                </p>
+
+                <p className="mt-2 leading-7 text-slate-600">
+                  Então você está diante de uma escola da rede municipal
+                  de Salvador.
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-[#FFF6D8] p-5">
+                <p className="font-black">
+                  🌴 É uma escola estadual?
+                </p>
+
+                <p className="mt-2 leading-7 text-slate-600">
+                  Então ela pertence à rede estadual de ensino da Bahia.
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-[#F0F9F3] p-5">
+
+                <div className="flex items-center gap-3">
+
+                  <img
+                    src="/bandeira-brasil.svg"
+                    alt="Bandeira do Brasil"
+                    className="h-5 w-8 rounded-sm object-cover shadow-sm"
+                  />
+
+                  <p className="font-black">
+                    É uma instituição federal?
+                  </p>
+
+                </div>
+
+                <p className="mt-2 leading-7 text-slate-600">
+                  Nesse caso, ela está ligada à estrutura federal,
+                  e não à Prefeitura ou ao Governo da Bahia.
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+          {/* IDEIA PRINCIPAL */}
+          <div className="mt-8 rounded-[30px] bg-[#071D49] p-8 text-white md:p-10">
+
+            <p className="text-sm font-extrabold tracking-[0.16em] text-cyan-300">
+              O MAIS IMPORTANTE
+            </p>
+
+            <h3 className="mt-3 max-w-3xl text-3xl font-black">
+              Para cobrar direito, primeiro descubra quem é responsável.
+            </h3>
+
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-blue-100">
+              Isso evita cobrar de quem não administra aquele serviço
+              e ajuda você a procurar o órgão público correto.
+            </p>
+
+          </div>
+
+        </div>
+      </section>
+            {/* TESTE RÁPIDO */}
+      <section className="bg-white">
+        <div className="mx-auto max-w-5xl px-6 py-16">
+
+          <p className="text-sm font-extrabold tracking-[0.16em] text-[#0879E8]">
+            🧠 TESTE RÁPIDO
+          </p>
+
+          <h2 className="mt-3 text-4xl font-black">
+            Vamos ver se ficou claro?
+          </h2>
+
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+            Leia a situação e tente responder antes de olhar a explicação.
+          </p>
+
+          <div className="mt-10 rounded-[30px] border border-blue-100 bg-[#F8FBFF] p-8 md:p-10">
+
+            <p className="text-sm font-extrabold text-[#0879E8]">
+              SITUAÇÃO
+            </p>
+
+            <h3 className="mt-3 text-2xl font-black leading-9">
+              Uma escola estadual localizada em Salvador está com problemas.
+              Quem administra essa escola?
+            </h3>
+
+            <div className="mt-8 space-y-3">
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 font-bold">
+                A) Prefeitura de Salvador
+              </div>
+
+              <div className="rounded-2xl border-2 border-[#0879E8] bg-[#EAF4FF] p-5 font-bold text-[#0879E8]">
+                B) Governo do Estado da Bahia
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 font-bold">
+                C) Governo Federal
+              </div>
+
+            </div>
+
+            <div className="mt-7 rounded-2xl bg-[#EAF8EF] p-6">
+
+              <p className="text-lg font-black text-[#176B3A]">
+                ✓ Resposta: Governo do Estado da Bahia
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-700">
+                A escola está dentro de Salvador, mas ela é
+                <strong> estadual</strong>. Isso significa que pertence
+                à rede do Estado da Bahia.
+              </p>
+
+              <p className="mt-3 font-bold text-[#071D49]">
+                Lembra da regra? O lugar onde o serviço está não diz,
+                sozinho, quem administra esse serviço.
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* SEGUNDA PERGUNTA */}
+          <div className="mt-6 rounded-[30px] border border-blue-100 bg-[#F8FBFF] p-8 md:p-10">
+
+            <p className="text-sm font-extrabold text-[#0879E8]">
+              MAIS UMA
+            </p>
+
+            <h3 className="mt-3 text-2xl font-black leading-9">
+              Uma pessoa que mora em Salvador está com um problema no
+              benefício do INSS. Esse assunto pertence a qual nível?
+            </h3>
+
+            <div className="mt-8 space-y-3">
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 font-bold">
+                A) Município
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 font-bold">
+                B) Estado da Bahia
+              </div>
+
+              <div className="rounded-2xl border-2 border-[#0879E8] bg-[#EAF4FF] p-5 font-bold text-[#0879E8]">
+                C) Federal
+              </div>
+
+            </div>
+
+            <div className="mt-7 rounded-2xl bg-[#EAF8EF] p-6">
+
+              <div className="flex items-center gap-3">
+                <img
+                  src="/bandeira-brasil.svg"
+                  alt="Bandeira do Brasil"
+                  className="h-5 w-8 rounded-sm object-cover shadow-sm"
+                />
+
+                <p className="text-lg font-black text-[#176B3A]">
+                  ✓ Resposta: Federal
+                </p>
+              </div>
+
+              <p className="mt-3 leading-7 text-slate-700">
+                O INSS faz parte da administração pública federal.
+                Morar em Salvador não muda isso.
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* PARABÉNS */}
+          <div className="mt-10 rounded-[30px] bg-gradient-to-r from-[#1168D8] to-[#159CF0] p-8 text-white md:p-10">
+
+            <p className="text-sm font-extrabold tracking-[0.16em] text-blue-100">
+              SE VOCÊ ENTENDEU ISSO, JÁ APRENDEU ALGO IMPORTANTE
+            </p>
+
+            <h3 className="mt-4 max-w-3xl text-3xl font-black">
+              Nem tudo que acontece em Salvador é responsabilidade
+              da Prefeitura.
+            </h3>
+
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-blue-100">
+              Antes de cobrar uma solução, procure saber se aquele serviço
+              é municipal, estadual, federal ou se existe responsabilidade
+              compartilhada.
+            </p>
+
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  );
+}
