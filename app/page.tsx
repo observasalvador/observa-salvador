@@ -11,6 +11,7 @@ const temas = [
     title: "Quem faz o quê",
     description: "Entenda os poderes e as funções",
     color: "bg-cyan-50",
+    href: "/quem-faz-o-que",
   },
   {
     icon: "👥",
@@ -136,7 +137,10 @@ export default function Home() {
       </section>
 
       {/* CONTEÚDO PRINCIPAL */}
-      <section id="entenda" className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+      <section
+        id="entenda"
+        className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16"
+      >
         <div className="mb-8">
           <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0879E8] md:text-sm">
             Comece por aqui
@@ -158,7 +162,7 @@ export default function Home() {
             <a
               key={tema.title}
               href={tema.href || "#"}
-              className={`${tema.color} group cursor-pointer rounded-[26px] border border-white ...`}
+              className={`${tema.color} group cursor-pointer rounded-[26px] border border-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md md:p-6`}
             >
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">
                 {tema.icon}
@@ -216,9 +220,11 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-5 px-5 py-10 md:grid-cols-4 md:px-8">
           <div>
             <div className="text-2xl">🛡️</div>
+
             <h4 className="mt-3 font-extrabold text-[#071D49]">
               Informação confiável
             </h4>
+
             <p className="mt-1 text-sm leading-6 text-slate-600">
               Fontes identificadas e informação contextualizada.
             </p>
@@ -226,9 +232,11 @@ export default function Home() {
 
           <div>
             <div className="text-2xl">👥</div>
+
             <h4 className="mt-3 font-extrabold text-[#071D49]">
               Linguagem acessível
             </h4>
+
             <p className="mt-1 text-sm leading-6 text-slate-600">
               Conteúdo apresentado sem linguagem desnecessariamente complicada.
             </p>
@@ -236,9 +244,11 @@ export default function Home() {
 
           <div>
             <div className="text-2xl">🌱</div>
+
             <h4 className="mt-3 font-extrabold text-[#071D49]">
               Cidadania na prática
             </h4>
+
             <p className="mt-1 text-sm leading-6 text-slate-600">
               Ferramentas para compreender e acompanhar o poder público.
             </p>
@@ -246,9 +256,11 @@ export default function Home() {
 
           <div>
             <div className="text-2xl">📍</div>
+
             <h4 className="mt-3 font-extrabold text-[#071D49]">
               Feito em Salvador
             </h4>
+
             <p className="mt-1 text-sm leading-6 text-slate-600">
               Informação pública com foco inicial na realidade da cidade.
             </p>
@@ -268,9 +280,9 @@ export default function Home() {
           </h3>
 
           <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-slate-700 md:text-lg">
-            O Observa Salvador não diz ao cidadão o que pensar nem em quem votar.
-            Apresentamos informações verificáveis, contexto e fontes para que
-            cada pessoa possa chegar às próprias conclusões.
+            O Observa Salvador não diz ao cidadão o que pensar nem em quem
+            votar. Apresentamos informações verificáveis, contexto e fontes
+            para que cada pessoa possa chegar às próprias conclusões.
           </p>
         </div>
       </section>
@@ -290,6 +302,7 @@ export default function Home() {
 
           <div className="text-sm leading-6 text-blue-100 md:text-right">
             <p>Informação • Participação • Transparência</p>
+
             <p className="font-semibold text-white">
               Uma cidade mais consciente.
             </p>
