@@ -1,18 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Nivel = "salvador" | "bahia" | "brasil";
 
-type ProjetoDemonstracao = {
+type Proposicao = {
   id: number;
-  titulo: string;
-  resumo: string;
-  identificacao: string;
-  autor: string;
-  situacao: "Em análise" | "Aprovado" | "Encerrado";
-  tema: string;
+  uri: string;
+  siglaTipo: string;
+  codTipo: number;
+  numero: number;
+  ano: number;
+  ementa: string;
+  dataApresentacao?: string;
+};
+
+type RespostaAPI = {
+  fonte: string;
+  atualizadoEm: string;
+  dados: Proposicao[];
+  links: {
+    rel: string;
+    href: string;
+  }[];
 };
 
 const niveis = [
@@ -29,77 +40,164 @@ const niveis = [
   {
     id: "brasil" as Nivel,
     titulo: "Brasil",
-    subtitulo: "Congresso Nacional",
+    subtitulo: "Câmara dos Deputados",
   },
 ];
 
-/*
-  Estes registros são apenas demonstrativos.
-  Depois esta lista será substituída pelos dados vindos das fontes oficiais.
-*/
-const projetosDemonstracao: ProjetoDemonstracao[] = [
-  {
-    id: 1,
-    titulo: "Proposta relacionada ao transporte público",
-    resumo:
-      "Exemplo de como uma proposta aparecerá depois que os dados oficiais forem conectados.",
-    identificacao: "EXEMPLO 001",
-    autor: "Autor demonstrativo",
-    situacao: "Em análise",
-    tema: "Transporte",
-  },
-  {
-    id: 2,
-    titulo: "Proposta relacionada à iluminação pública",
-    resumo:
-      "Este registro existe apenas para testar a pesquisa e os filtros da página.",
-    identificacao: "EXEMPLO 002",
-    autor: "Autor demonstrativo",
-    situacao: "Aprovado",
-    tema: "Cidade",
-  },
-  {
-    id: 3,
-    titulo: "Proposta relacionada à drenagem urbana",
-    resumo:
-      "Depois, esta área receberá projetos verdadeiros obtidos das fontes públicas.",
-    identificacao: "EXEMPLO 003",
-    autor: "Autor demonstrativo",
-    situacao: "Encerrado",
-    tema: "Infraestrutura",
-  },
-];
+function nomeTipo(sigla: string) {
+  const tipos: Record<string, string> = {
+    PL: "Projeto de Lei",
+    PLP: "Projeto de Lei Complementar",
+    PEC: "Proposta de Emenda à Constituição",
+    PDL: "Projeto de Decreto Legislativo",
+    PRC: "Projeto de Resolução",
+    MPV: "Medida Provisória",
+    REQ: "Requerimento",
+    RIC: "Pedido de Informação",
+  };
+
+  return tipos[sigla] || sigla;
+}
+
+function formatarData(data?: string) {
+  if (!data) return null;
+
+  const dataFormatada = new Date(data);
+
+  if (Number.isNaN(dataFormatada.getTime())) {
+    return null;
+  }
+
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(dataFormatada);
+}
 
 export default function ProjetosEPropostas() {
   const [nivel, setNivel] = useState<Nivel>("brasil");
-  const [busca, setBusca] = useState("");
-  const [situacao, setSituacao] = useState("Todos");
+
+  const [proposicoes, setProposicoes] = useState<Proposicao[]>([]);
+  const [buscaDigitada, setBuscaDigitada] = useState("");
+  const [buscaAplicada, setBuscaAplicada] = useState("");
+
+  const [pagina, setPagina] = useState(1);
+  const [temProximaPagina, setTemProximaPagina] = useState(false);
+
+  const [carregando, setCarregando] = useState(false);
+  const [carregandoMais, setCarregandoMais] = useState(false);
+  const [erro, setErro] = useState("");
+
   const [explicacaoAberta, setExplicacaoAberta] = useState(true);
 
-  const projetosFiltrados = useMemo(() => {
-    const termo = busca.trim().toLocaleLowerCase("pt-BR");
+  async function carregarProposicoes(
+    numeroPagina: number,
+    busca: string,
+    adicionar = false
+  ) {
+    try {
+      if (adicionar) {
+        setCarregandoMais(true);
+      } else {
+        setCarregando(true);
+      }
 
-    return projetosDemonstracao.filter((projeto) => {
-      const combinaBusca =
-        !termo ||
-        projeto.titulo.toLocaleLowerCase("pt-BR").includes(termo) ||
-        projeto.resumo.toLocaleLowerCase("pt-BR").includes(termo) ||
-        projeto.autor.toLocaleLowerCase("pt-BR").includes(termo) ||
-        projeto.tema.toLocaleLowerCase("pt-BR").includes(termo);
+      setErro("");
 
-      const combinaSituacao =
-        situacao === "Todos" || projeto.situacao === situacao;
+      const parametros = new URLSearchParams({
+        pagina: String(numeroPagina),
+        itens: "20",
+      });
 
-      return combinaBusca && combinaSituacao;
-    });
-  }, [busca, situacao]);
+      if (busca.trim()) {
+        parametros.set("busca", busca.trim());
+      }
+
+      const resposta = await fetch(
+        `/api/camara/proposicoes?${parametros.toString()}`
+      );
+
+      if (!resposta.ok) {
+        throw new Error("Não foi possível carregar os dados.");
+      }
+
+      const dados: RespostaAPI = await resposta.json();
+
+      if (adicionar) {
+        setProposicoes((anteriores) => [
+          ...anteriores,
+          ...(dados.dados || []),
+        ]);
+      } else {
+        setProposicoes(dados.dados || []);
+      }
+
+      setTemProximaPagina(
+        (dados.links || []).some((link) => link.rel === "next")
+      );
+    } catch (error) {
+      console.error(error);
+
+      setErro(
+        "Não foi possível consultar os dados da Câmara dos Deputados neste momento."
+      );
+    } finally {
+      setCarregando(false);
+      setCarregandoMais(false);
+    }
+  }
+
+  useEffect(() => {
+    carregarProposicoes(1, "", false);
+  }, []);
+
+  function pesquisar() {
+    const termo = buscaDigitada.trim();
+
+    setBuscaAplicada(termo);
+    setPagina(1);
+
+    carregarProposicoes(1, termo, false);
+  }
+
+  function limparPesquisa() {
+    setBuscaDigitada("");
+    setBuscaAplicada("");
+    setPagina(1);
+
+    carregarProposicoes(1, "", false);
+  }
+
+  function carregarMais() {
+    const proximaPagina = pagina + 1;
+
+    setPagina(proximaPagina);
+
+    carregarProposicoes(
+      proximaPagina,
+      buscaAplicada,
+      true
+    );
+  }
+
+  function pesquisarTema(tema: string) {
+    setBuscaDigitada(tema);
+    setBuscaAplicada(tema);
+    setPagina(1);
+
+    carregarProposicoes(1, tema, false);
+  }
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
       {/* CABEÇALHO */}
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-[1050px] items-center justify-between px-5 py-4 md:px-8">
-          <Link href="/" className="text-[15px] font-extrabold text-blue-950">
+          <Link
+            href="/"
+            className="text-[15px] font-extrabold text-blue-950"
+          >
             Observa Salvador
           </Link>
 
@@ -123,12 +221,12 @@ export default function ProjetosEPropostas() {
         </h1>
 
         <p className="mt-4 max-w-[760px] text-[15px] leading-6 text-slate-600">
-          Pesquise propostas, entenda o que elas querem mudar, descubra quem
-          apresentou e acompanhe o caminho de cada uma.
+          Pesquise propostas, entenda o que está sendo discutido e acompanhe o
+          caminho de cada uma.
         </p>
       </section>
 
-      {/* ALERTA PRINCIPAL */}
+      {/* NÃO CONFUNDA */}
       <section className="mx-auto max-w-[1050px] px-5 md:px-8">
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 md:px-6">
           <p className="text-[10px] font-extrabold uppercase tracking-wide text-amber-800">
@@ -137,7 +235,7 @@ export default function ProjetosEPropostas() {
 
           <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
             <span className="rounded-md bg-white px-3 py-2 text-[12px] font-extrabold text-blue-950">
-              Alguém apresentou uma proposta
+              Uma proposta foi apresentada
             </span>
 
             <span className="hidden font-bold text-amber-600 sm:block">≠</span>
@@ -148,9 +246,8 @@ export default function ProjetosEPropostas() {
           </div>
 
           <p className="mt-3 max-w-[780px] text-[11px] leading-5 text-slate-700">
-            Uma proposta pode passar por várias etapas, ser modificada, ser
-            aprovada ou não continuar. Por isso, sempre mostramos em que ponto
-            ela está.
+            Apresentar uma proposta é apenas o começo. Ela ainda pode passar
+            por análise, mudanças e votações antes de existir um resultado.
           </p>
         </div>
       </section>
@@ -169,7 +266,7 @@ export default function ProjetosEPropostas() {
               </p>
 
               <p className="mt-1 text-[14px] font-extrabold text-blue-950">
-                Como uma ideia pode virar uma regra?
+                Nem tudo que aparece aqui é um projeto de lei
               </p>
             </div>
 
@@ -181,33 +278,10 @@ export default function ProjetosEPropostas() {
           {explicacaoAberta && (
             <div className="border-t border-slate-200 px-5 py-5 md:px-6">
               <p className="max-w-[780px] text-[12px] leading-5 text-slate-700">
-                Imagine que alguém apresenta uma proposta para mudar uma regra
-                que existe hoje. A apresentação é apenas o começo. Antes de uma
-                mudança realmente passar a valer, podem existir várias etapas.
+                Na Câmara existem vários tipos de propostas e documentos. Um
+                deputado pode apresentar um projeto de lei, pedir informações,
+                fazer um requerimento ou participar de outros procedimentos.
               </p>
-
-              <div className="mt-5 grid gap-2 md:grid-cols-5">
-                {[
-                  ["1", "A ideia é apresentada"],
-                  ["2", "Ela começa a ser analisada"],
-                  ["3", "O texto pode mudar"],
-                  ["4", "Pode haver votações"],
-                  ["5", "Há um resultado"],
-                ].map(([numero, texto]) => (
-                  <div
-                    key={numero}
-                    className="rounded-lg bg-slate-50 px-3 py-3"
-                  >
-                    <span className="text-[10px] font-extrabold text-blue-600">
-                      {numero}
-                    </span>
-
-                    <p className="mt-1 text-[11px] font-extrabold leading-4 text-blue-950">
-                      {texto}
-                    </p>
-                  </div>
-                ))}
-              </div>
 
               <div className="mt-4 border-l-2 border-blue-400 pl-3">
                 <p className="text-[10px] font-extrabold uppercase tracking-wide text-blue-700">
@@ -215,16 +289,17 @@ export default function ProjetosEPropostas() {
                 </p>
 
                 <p className="mt-1 text-[12px] font-extrabold text-blue-950">
-                  Tramitação
+                  Proposição
                 </p>
 
                 <p className="mt-1 max-w-[720px] text-[11px] leading-5 text-slate-600">
-                  É o caminho que uma proposta percorre enquanto está sendo
-                  analisada.
+                  É um nome usado pela Câmara para diferentes tipos de
+                  propostas e documentos apresentados no processo legislativo.
                 </p>
 
-                <p className="mt-1 text-[11px] font-bold text-blue-700">
-                  Pense assim: tramitação → caminho da proposta.
+                <p className="mt-2 text-[11px] font-bold text-blue-700">
+                  Projeto de lei é um tipo de proposição, mas nem toda
+                  proposição é um projeto de lei.
                 </p>
               </div>
             </div>
@@ -232,7 +307,7 @@ export default function ProjetosEPropostas() {
         </div>
       </section>
 
-      {/* NÍVEL */}
+      {/* NÍVEIS */}
       <section className="mx-auto max-w-[1050px] px-5 pt-8 md:px-8">
         <p className="mb-2 text-[10px] font-extrabold uppercase tracking-[0.12em] text-slate-500">
           Onde você quer pesquisar?
@@ -252,7 +327,9 @@ export default function ProjetosEPropostas() {
                     ? "border-t border-slate-200 sm:border-l sm:border-t-0"
                     : ""
                 } ${
-                  ativo ? "bg-blue-950 text-white" : "hover:bg-slate-50"
+                  ativo
+                    ? "bg-blue-950 text-white"
+                    : "hover:bg-slate-50"
                 }`}
               >
                 <p
@@ -276,237 +353,283 @@ export default function ProjetosEPropostas() {
         </div>
       </section>
 
-      {/* BUSCA */}
-      <section className="mx-auto max-w-[1050px] px-5 pt-5 md:px-8">
-        <div className="rounded-xl border border-slate-200 bg-white p-4 md:p-5">
-          <p className="text-[10px] font-extrabold uppercase tracking-wide text-blue-600">
-            PESQUISAR
-          </p>
-
-          <div className="mt-3 grid gap-3 md:grid-cols-[1fr_190px]">
-            <div>
-              <label
-                htmlFor="busca"
-                className="text-[11px] font-extrabold text-blue-950"
-              >
-                O que você quer encontrar?
-              </label>
-
-              <input
-                id="busca"
-                type="text"
-                value={busca}
-                onChange={(event) => setBusca(event.target.value)}
-                placeholder="Ex.: ônibus, iluminação, escola, imposto..."
-                className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-[12px] outline-none transition placeholder:text-slate-400 focus:border-blue-400"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="situacao"
-                className="text-[11px] font-extrabold text-blue-950"
-              >
-                O que aconteceu?
-              </label>
-
-              <select
-                id="situacao"
-                value={situacao}
-                onChange={(event) => setSituacao(event.target.value)}
-                className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-[12px] font-bold text-slate-700 outline-none focus:border-blue-400"
-              >
-                <option>Todos</option>
-                <option>Em análise</option>
-                <option>Aprovado</option>
-                <option>Encerrado</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {["Saúde", "Transporte", "Segurança", "Educação", "Impostos", "Obras"].map(
-              (tema) => (
-                <button
-                  key={tema}
-                  type="button"
-                  onClick={() => setBusca(tema)}
-                  className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-bold text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-                >
-                  {tema}
-                </button>
-              )
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* EXPLICAÇÃO DO NÍVEL */}
-      <section className="mx-auto max-w-[1050px] px-5 pt-4 md:px-8">
-        <div className="flex items-start gap-3 rounded-lg bg-blue-50 px-4 py-3">
-          <span className="mt-0.5 text-[12px]">ℹ️</span>
-
-          <p className="text-[11px] leading-5 text-slate-700">
-            {nivel === "salvador" && (
-              <>
-                Você está pesquisando propostas relacionadas à{" "}
-                <strong>Câmara Municipal de Salvador</strong>.
-              </>
-            )}
-
-            {nivel === "bahia" && (
-              <>
-                Você está pesquisando propostas relacionadas à{" "}
-                <strong>Assembleia Legislativa da Bahia</strong>.
-              </>
-            )}
-
-            {nivel === "brasil" && (
-              <>
-                Você está pesquisando propostas do{" "}
-                <strong>Congresso Nacional</strong>. Quando for útil para
-                Salvador e para a Bahia, destacaremos também os representantes
-                eleitos pelo estado envolvidos na proposta.
-              </>
-            )}
-          </p>
-        </div>
-      </section>
-
-      {/* RESULTADOS */}
-      <section className="mx-auto max-w-[1050px] px-5 pb-12 pt-5 md:px-8">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-[10px] font-extrabold uppercase tracking-wide text-slate-500">
-              RESULTADOS
+      {/* SALVADOR E BAHIA */}
+      {nivel !== "brasil" && (
+        <section className="mx-auto max-w-[1050px] px-5 pb-12 pt-5 md:px-8">
+          <div className="rounded-xl border border-slate-200 bg-white px-5 py-6 md:px-6">
+            <p className="text-[10px] font-extrabold uppercase tracking-wide text-blue-600">
+              {nivel === "salvador" ? "SALVADOR" : "BAHIA"}
             </p>
 
-            <h2 className="mt-1 text-[18px] font-extrabold text-blue-950">
-              Projetos encontrados
+            <h2 className="mt-1 text-[20px] font-extrabold text-blue-950">
+              {nivel === "salvador"
+                ? "Propostas da Câmara Municipal de Salvador"
+                : "Propostas da Assembleia Legislativa da Bahia"}
             </h2>
+
+            <p className="mt-2 max-w-[720px] text-[12px] leading-5 text-slate-600">
+              A integração automática desta fonte ainda será construída. Não
+              vamos misturar dados da Câmara dos Deputados com decisões
+              municipais ou estaduais.
+            </p>
           </div>
+        </section>
+      )}
 
-          <span className="rounded-md bg-slate-100 px-2.5 py-1.5 text-[10px] font-bold text-slate-600">
-            {projetosFiltrados.length} nesta demonstração
-          </span>
-        </div>
+      {/* BRASIL */}
+      {nivel === "brasil" && (
+        <>
+          {/* BUSCA */}
+          <section className="mx-auto max-w-[1050px] px-5 pt-5 md:px-8">
+            <div className="rounded-xl border border-slate-200 bg-white p-4 md:p-5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <p className="text-[10px] font-extrabold uppercase tracking-wide text-blue-600">
+                    PESQUISAR NA CÂMARA DOS DEPUTADOS
+                  </p>
 
-        <div className="mt-4 space-y-2">
-          {projetosFiltrados.length > 0 ? (
-            projetosFiltrados.map((projeto) => (
-              <article
-                key={projeto.id}
-                className="rounded-xl border border-slate-200 bg-white px-5 py-4 transition hover:border-blue-200"
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    Os resultados abaixo vêm da base oficial da Câmara.
+                  </p>
+                </div>
+
+                <span className="rounded-md bg-emerald-50 px-2.5 py-1.5 text-[9px] font-extrabold uppercase text-emerald-700">
+                  Dados oficiais
+                </span>
+              </div>
+
+              <form
+                className="mt-4 flex flex-col gap-2 sm:flex-row"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  pesquisar();
+                }}
               >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="max-w-[720px]">
-                    <div className="flex flex-wrap gap-2">
-                      <span className="rounded-md bg-blue-50 px-2 py-1 text-[9px] font-extrabold text-blue-700">
-                        {projeto.tema}
-                      </span>
+                <input
+                  type="text"
+                  value={buscaDigitada}
+                  onChange={(event) =>
+                    setBuscaDigitada(event.target.value)
+                  }
+                  placeholder="Ex.: transporte, iluminação, imposto..."
+                  className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-4 py-3 text-[12px] outline-none transition placeholder:text-slate-400 focus:border-blue-400"
+                />
 
-                      <span
-                        className={`rounded-md px-2 py-1 text-[9px] font-extrabold ${
-                          projeto.situacao === "Em análise"
-                            ? "bg-amber-50 text-amber-800"
-                            : projeto.situacao === "Aprovado"
-                            ? "bg-emerald-50 text-emerald-700"
-                            : "bg-slate-100 text-slate-600"
-                        }`}
-                      >
-                        {projeto.situacao}
-                      </span>
-                    </div>
+                <button
+                  type="submit"
+                  disabled={carregando}
+                  className="rounded-lg bg-blue-950 px-5 py-3 text-[11px] font-extrabold text-white transition hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Pesquisar
+                </button>
 
-                    <h3 className="mt-3 text-[15px] font-extrabold text-blue-950">
-                      {projeto.titulo}
-                    </h3>
-
-                    <p className="mt-1 text-[11px] leading-5 text-slate-600">
-                      {projeto.resumo}
-                    </p>
-
-                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[10px] text-slate-500">
-                      <span>
-                        <strong className="text-slate-700">Autor:</strong>{" "}
-                        {projeto.autor}
-                      </span>
-
-                      <span>
-                        <strong className="text-slate-700">
-                          Identificação:
-                        </strong>{" "}
-                        {projeto.identificacao}
-                      </span>
-                    </div>
-                  </div>
-
+                {buscaAplicada && (
                   <button
                     type="button"
-                    className="shrink-0 rounded-lg border border-slate-200 px-3 py-2 text-[10px] font-extrabold text-blue-700 hover:bg-blue-50"
+                    onClick={limparPesquisa}
+                    className="rounded-lg border border-slate-200 px-4 py-3 text-[11px] font-bold text-slate-600 hover:bg-slate-50"
                   >
-                    Entender proposta →
+                    Limpar
                   </button>
+                )}
+              </form>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                {[
+                  "Saúde",
+                  "Transporte",
+                  "Segurança",
+                  "Educação",
+                  "Impostos",
+                  "Habitação",
+                ].map((tema) => (
+                  <button
+                    key={tema}
+                    type="button"
+                    onClick={() => pesquisarTema(tema)}
+                    className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-bold text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                  >
+                    {tema}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* RESULTADOS */}
+          <section className="mx-auto max-w-[1050px] px-5 pb-12 pt-5 md:px-8">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-wide text-slate-500">
+                  RESULTADOS
+                </p>
+
+                <h2 className="mt-1 text-[18px] font-extrabold text-blue-950">
+                  {buscaAplicada
+                    ? `Resultados para “${buscaAplicada}”`
+                    : "Proposições recentes"}
+                </h2>
+              </div>
+
+              {!carregando && !erro && (
+                <span className="rounded-md bg-slate-100 px-2.5 py-1.5 text-[10px] font-bold text-slate-600">
+                  {proposicoes.length} carregadas
+                </span>
+              )}
+            </div>
+
+            {carregando && (
+              <div className="mt-4 rounded-xl border border-slate-200 bg-white px-5 py-8 text-center">
+                <p className="text-[12px] font-extrabold text-blue-950">
+                  Consultando a Câmara dos Deputados...
+                </p>
+
+                <p className="mt-1 text-[11px] text-slate-500">
+                  Estamos buscando os registros oficiais.
+                </p>
+              </div>
+            )}
+
+            {!carregando && erro && (
+              <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-5 py-5">
+                <p className="text-[12px] font-extrabold text-rose-800">
+                  Não conseguimos carregar os dados.
+                </p>
+
+                <p className="mt-1 text-[11px] leading-5 text-slate-600">
+                  {erro}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    carregarProposicoes(1, buscaAplicada, false)
+                  }
+                  className="mt-3 rounded-lg bg-white px-3 py-2 text-[10px] font-extrabold text-blue-700"
+                >
+                  Tentar novamente
+                </button>
+              </div>
+            )}
+
+            {!carregando && !erro && proposicoes.length === 0 && (
+              <div className="mt-4 rounded-xl border border-dashed border-slate-300 bg-white px-5 py-8 text-center">
+                <p className="text-[12px] font-extrabold text-blue-950">
+                  Nenhum resultado encontrado.
+                </p>
+
+                <p className="mt-1 text-[11px] text-slate-500">
+                  Tente pesquisar outra palavra.
+                </p>
+              </div>
+            )}
+
+            {!carregando && !erro && proposicoes.length > 0 && (
+              <>
+                <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                  {proposicoes.map((proposicao, index) => {
+                    const data = formatarData(
+                      proposicao.dataApresentacao
+                    );
+
+                    return (
+                      <article
+                        key={proposicao.id}
+                        className={`px-5 py-4 md:px-6 ${
+                          index !== 0
+                            ? "border-t border-slate-200"
+                            : ""
+                        }`}
+                      >
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                          <div className="min-w-0 max-w-[790px]">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="rounded-md bg-blue-50 px-2 py-1 text-[9px] font-extrabold text-blue-700">
+                                {nomeTipo(proposicao.siglaTipo)}
+                              </span>
+
+                              <span className="text-[10px] font-extrabold text-slate-500">
+                                {proposicao.siglaTipo}{" "}
+                                {proposicao.numero}/{proposicao.ano}
+                              </span>
+
+                              {data && (
+                                <span className="text-[10px] text-slate-400">
+                                  Apresentada em {data}
+                                </span>
+                              )}
+                            </div>
+
+                            <h3 className="mt-3 text-[12px] font-extrabold uppercase tracking-wide text-slate-400">
+                              O que diz o registro oficial
+                            </h3>
+
+                            <p className="mt-1 text-[12px] leading-5 text-slate-700">
+                              {proposicao.ementa ||
+                                "A fonte consultada não apresentou uma descrição neste resultado."}
+                            </p>
+
+                            <p className="mt-3 text-[9px] font-bold uppercase tracking-wide text-slate-400">
+                              Fonte: Câmara dos Deputados
+                            </p>
+                          </div>
+
+                          <Link
+                            href={`/projetos-e-propostas/${proposicao.id}`}
+                            className="shrink-0 rounded-lg border border-blue-200 bg-white px-3 py-2 text-center text-[10px] font-extrabold text-blue-700 transition hover:border-blue-300 hover:bg-blue-50"
+                          >
+                            Entender proposta →
+                          </Link>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
-              </article>
-            ))
-          ) : (
-            <div className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-8 text-center">
-              <p className="text-[12px] font-extrabold text-blue-950">
-                Nenhum resultado encontrado.
+
+                {temProximaPagina && (
+                  <div className="mt-4 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={carregarMais}
+                      disabled={carregandoMais}
+                      className="rounded-lg border border-blue-200 bg-white px-5 py-3 text-[11px] font-extrabold text-blue-700 transition hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {carregandoMais
+                        ? "Carregando..."
+                        : "Carregar mais resultados"}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+
+            <div className="mt-5 rounded-xl border border-cyan-100 bg-cyan-50 px-5 py-4">
+              <p className="text-[10px] font-extrabold uppercase tracking-wide text-cyan-800">
+                ESTAMOS CONSTRUINDO A LEITURA COMPLETA
               </p>
 
-              <p className="mt-1 text-[11px] text-slate-500">
-                Tente pesquisar outra palavra ou mudar o filtro.
+              <p className="mt-2 max-w-[800px] text-[11px] leading-5 text-slate-700">
+                Esta página já consulta proposições reais da Câmara dos
+                Deputados e permite abrir cada registro individualmente. Nas
+                próximas etapas, vamos conectar autoria, temas, caminho da
+                proposta e votações relacionadas.
               </p>
             </div>
-          )}
-        </div>
 
-        {/* AVISO SOBRE DADOS */}
-        <div className="mt-5 rounded-xl border border-cyan-100 bg-cyan-50 px-5 py-4">
-          <p className="text-[10px] font-extrabold uppercase tracking-wide text-cyan-800">
-            COMO ESTA ÁREA VAI FUNCIONAR
-          </p>
+            <div className="mt-4 rounded-xl border border-rose-100 bg-rose-50 px-5 py-4">
+              <p className="text-[10px] font-extrabold uppercase tracking-wide text-rose-700">
+                INFORMAÇÃO PARA VOCÊ FORMAR SUA PRÓPRIA OPINIÃO
+              </p>
 
-          <p className="mt-2 max-w-[800px] text-[11px] leading-5 text-slate-700">
-            Os três registros mostrados acima existem apenas para testar a
-            interface. Na versão conectada, esta área será preenchida com
-            informações obtidas de fontes públicas oficiais.
-          </p>
-
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-extrabold">
-            <span className="rounded-md bg-white px-2.5 py-2 text-slate-700">
-              Fonte oficial
-            </span>
-            <span className="text-slate-400">→</span>
-            <span className="rounded-md bg-white px-2.5 py-2 text-slate-700">
-              Base do Observa Salvador
-            </span>
-            <span className="text-slate-400">→</span>
-            <span className="rounded-md bg-white px-2.5 py-2 text-slate-700">
-              Explicação simples
-            </span>
-            <span className="text-slate-400">→</span>
-            <span className="rounded-md bg-white px-2.5 py-2 text-slate-700">
-              Link para conferir
-            </span>
-          </div>
-        </div>
-
-        {/* PRINCÍPIO EDITORIAL */}
-        <div className="mt-4 rounded-xl border border-rose-100 bg-rose-50 px-5 py-4">
-          <p className="text-[10px] font-extrabold uppercase tracking-wide text-rose-700">
-            O OBSERVA SALVADOR NÃO ESCOLHE UMA POSIÇÃO POR VOCÊ
-          </p>
-
-          <p className="mt-2 max-w-[800px] text-[11px] leading-5 text-slate-700">
-            A plataforma mostra o que está sendo proposto, quem apresentou, em
-            que etapa está e quais fontes sustentam essas informações. A
-            avaliação da proposta pertence a cada cidadão.
-          </p>
-        </div>
-      </section>
+              <p className="mt-2 max-w-[800px] text-[11px] leading-5 text-slate-700">
+                O Observa Salvador apresenta informações verificáveis,
+                contexto e fontes. A plataforma não escolhe uma posição
+                política pelo cidadão nem recomenda em quem votar.
+              </p>
+            </div>
+          </section>
+        </>
+      )}
 
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto flex max-w-[1050px] flex-col gap-2 px-5 py-7 sm:flex-row sm:items-center sm:justify-between md:px-8">
