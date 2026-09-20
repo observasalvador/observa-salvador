@@ -11,6 +11,14 @@ export async function GET(request: NextRequest) {
     const itens = searchParams.get("itens") || "20";
     const busca = searchParams.get("busca")?.trim();
 
+    // Opcional:
+    // permite que uma página peça apenas determinados tipos
+    // de proposição sem alterar as páginas que não usam o filtro.
+    const tipos = searchParams
+      .getAll("tipo")
+      .map((tipo) => tipo.trim().toUpperCase())
+      .filter(Boolean);
+
     const parametros = new URLSearchParams({
       pagina,
       itens,
@@ -21,6 +29,10 @@ export async function GET(request: NextRequest) {
     if (busca) {
       parametros.set("keywords", busca);
     }
+
+    tipos.forEach((tipo) => {
+      parametros.append("siglaTipo", tipo);
+    });
 
     const resposta = await fetch(
       `${CAMARA_API}?${parametros.toString()}`,

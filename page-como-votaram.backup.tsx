@@ -2,11 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import {
-  prioridadeDecisao,
-  traduzirDecisao,
-  traduzirTipoProposicao,
-} from "../../lib/traducao-legislativa";
 
 type Nivel = "salvador" | "bahia" | "brasil";
 
@@ -169,6 +164,186 @@ function corVoto(voto?: string) {
   }
 
   return "border-slate-200 bg-slate-50 text-slate-700";
+}
+
+function explicarTipoProposicao(
+  sigla?: string
+) {
+  switch ((sigla || "").toUpperCase()) {
+    case "PL":
+      return "Projeto de Lei";
+
+    case "PLP":
+      return "Projeto de Lei Complementar";
+
+    case "PEC":
+      return "Proposta de Emenda à Constituição";
+
+    case "MPV":
+      return "Medida Provisória";
+
+    case "PDL":
+      return "Projeto de Decreto Legislativo";
+
+    case "PRC":
+      return "Projeto de Resolução";
+
+    default:
+      return null;
+  }
+}
+
+function explicarDecisao(votacao: Votacao) {
+  const descricao =
+    textoSeguro(votacao.descricao) || "";
+
+  const objeto =
+    textoSeguro(votacao.proposicaoObjeto) || "";
+
+  const base = normalizarTexto(
+    `${objeto} ${descricao}`
+  );
+
+  if (base.includes("redacao final")) {
+    return {
+      tipo: "principal",
+      titulo: "Decisão sobre o texto final",
+      explicacao:
+        "Os deputados decidiram sobre a redação final preparada depois das etapas anteriores de análise da matéria.",
+      nomeOficial:
+        objeto || "Redação final",
+    };
+  }
+
+  if (
+    base.includes("merito") ||
+    base.includes("mérito")
+  ) {
+    return {
+      tipo: "principal",
+      titulo:
+        "Decisão sobre o conteúdo da matéria",
+      explicacao:
+        "Nesta decisão, os deputados analisaram o conteúdo da matéria ou de parte central dela.",
+      nomeOficial: objeto || null,
+    };
+  }
+
+  if (base.includes("urgencia")) {
+    return {
+      tipo: "procedimento",
+      titulo:
+        "Decisão sobre acelerar a análise",
+      explicacao:
+        "Os deputados decidiram se a matéria deveria seguir por um caminho mais rápido de análise. Isso não significa, por si só, aprovar ou rejeitar o conteúdo completo.",
+      nomeOficial:
+        objeto || "Requerimento de urgência",
+    };
+  }
+
+  if (
+    base.includes("retirada de pauta") ||
+    base.includes("retirada")
+  ) {
+    return {
+      tipo: "procedimento",
+      titulo:
+        "Decisão sobre retirar a matéria da análise naquele momento",
+      explicacao:
+        "Os deputados decidiram sobre um pedido para retirar a matéria da análise naquele momento. Isso é diferente de aprovar ou rejeitar seu conteúdo.",
+      nomeOficial: objeto || null,
+    };
+  }
+
+  if (
+    base.includes("adiamento") ||
+    base.includes("adiar")
+  ) {
+    return {
+      tipo: "procedimento",
+      titulo:
+        "Decisão sobre adiar a análise",
+      explicacao:
+        "Os deputados decidiram se a análise ou votação deveria ser adiada para outro momento.",
+      nomeOficial: objeto || null,
+    };
+  }
+
+  if (base.includes("destaque")) {
+    return {
+      tipo: "especifica",
+      titulo:
+        "Decisão sobre uma parte específica",
+      explicacao:
+        "Uma parte específica do texto foi separada para ser decidida. Esse resultado não deve ser interpretado automaticamente como apoio ou rejeição à matéria inteira.",
+      nomeOficial:
+        objeto || "Destaque",
+    };
+  }
+
+  if (
+    base.includes("subemenda") ||
+    base.includes("emenda")
+  ) {
+    return {
+      tipo: "especifica",
+      titulo:
+        "Decisão sobre uma alteração no texto",
+      explicacao:
+        "Os deputados decidiram sobre uma mudança proposta no texto. O resultado se refere a essa alteração específica.",
+      nomeOficial:
+        objeto || "Emenda",
+    };
+  }
+
+  if (
+    base.includes("substitutivo")
+  ) {
+    return {
+      tipo: "especifica",
+      titulo:
+        "Decisão sobre um texto que substitui a versão anterior",
+      explicacao:
+        "Foi colocado em análise um texto apresentado para substituir a versão que estava sendo discutida.",
+      nomeOficial:
+        objeto || "Substitutivo",
+    };
+  }
+
+  if (base.includes("parecer")) {
+    return {
+      tipo: "tecnica",
+      titulo:
+        "Decisão relacionada a uma análise da matéria",
+      explicacao:
+        "Esta decisão está ligada a um parecer, que é um documento no qual um parlamentar ou comissão apresenta uma análise sobre a matéria.",
+      nomeOficial:
+        objeto || "Parecer",
+    };
+  }
+
+  return {
+    tipo: "nao-classificada",
+    titulo:
+      "Outra decisão relacionada à matéria",
+    explicacao:
+      "A fonte oficial registra esta votação como relacionada à matéria. A explicação automática desta etapa ainda não foi validada pelo Observa Salvador.",
+    nomeOficial: objeto || null,
+  };
+}
+
+function prioridadeDecisao(
+  votacao: Votacao
+) {
+  const tipo =
+    explicarDecisao(votacao).tipo;
+
+  if (tipo === "principal") return 1;
+  if (tipo === "especifica") return 2;
+  if (tipo === "procedimento") return 3;
+  if (tipo === "tecnica") return 4;
+
+  return 5;
 }
 
 function extrairPlacar(
@@ -344,7 +519,7 @@ function VotacaoCard({
   >([]);
 
   const explicacao =
-    traduzirDecisao(votacao);
+    explicarDecisao(votacao);
 
   const placar =
     extrairPlacar(votacao.descricao);
@@ -561,60 +736,7 @@ function VotacaoCard({
             </div>
           )}
 
-          {(explicacao.votoSim || explicacao.votoNao || explicacao.alerta) && (
-  <div className="mt-4 overflow-hidden rounded-lg border border-blue-100 bg-blue-50/60">
-    <div className="border-b border-blue-100 px-4 py-3">
-      <p className="text-[9px] font-extrabold uppercase tracking-[0.12em] text-blue-700">
-        ENTENDA ESTE VOTO
-      </p>
-
-      <p className="mt-1 text-[11px] leading-5 text-slate-600">
-        Antes de olhar quem votou SIM ou NÃO, entenda o que cada escolha significava nesta decisão.
-      </p>
-    </div>
-
-    {(explicacao.votoSim || explicacao.votoNao) && (
-      <div className="grid md:grid-cols-2">
-        {explicacao.votoSim && (
-          <div className="border-b border-blue-100 px-4 py-3 md:border-b-0 md:border-r">
-            <p className="text-[10px] font-extrabold text-emerald-700">
-              O que significava votar SIM aqui?
-            </p>
-
-            <p className="mt-1 text-[11px] leading-5 text-slate-700">
-              {explicacao.votoSim}
-            </p>
-          </div>
-        )}
-
-        {explicacao.votoNao && (
-          <div className="px-4 py-3">
-            <p className="text-[10px] font-extrabold text-rose-700">
-              O que significava votar NÃO aqui?
-            </p>
-
-            <p className="mt-1 text-[11px] leading-5 text-slate-700">
-              {explicacao.votoNao}
-            </p>
-          </div>
-        )}
-      </div>
-    )}
-
-    {explicacao.alerta && (
-      <div className="border-t border-blue-100 bg-white/70 px-4 py-3">
-        <p className="text-[9px] font-extrabold uppercase tracking-wide text-amber-700">
-          IMPORTANTE
-        </p>
-
-        <p className="mt-1 text-[10px] leading-5 text-slate-600">
-          {explicacao.alerta}
-        </p>
-      </div>
-    )}
-  </div>
-)}
-{votacao.descricao && (
+          {votacao.descricao && (
             <div className="mt-4 rounded-lg bg-slate-50 px-4 py-3">
               <p className="text-[9px] font-extrabold uppercase tracking-wide text-slate-500">
                 O que consta no registro
@@ -902,7 +1024,7 @@ function MateriaCard({
     materia.votacoes.filter(
       (votacao) => {
         const tipo =
-          traduzirDecisao(
+          explicarDecisao(
             votacao
           ).tipo;
 
@@ -917,7 +1039,7 @@ function MateriaCard({
     materia.votacoes.filter(
       (votacao) => {
         const tipo =
-          traduzirDecisao(
+          explicarDecisao(
             votacao
           ).tipo;
 
@@ -930,7 +1052,7 @@ function MateriaCard({
     );
 
   const tipoPorExtenso =
-    traduzirTipoProposicao(
+    explicarTipoProposicao(
       materia.proposicao.siglaTipo
     );
 
